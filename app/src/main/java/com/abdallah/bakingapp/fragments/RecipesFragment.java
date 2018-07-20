@@ -1,4 +1,4 @@
-package com.abdallah.bakingapp;
+package com.abdallah.bakingapp.fragments;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -6,12 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-/**
- * A placeholder fragment containing a simple view.
- */
-public class RecipesActivityFragment extends Fragment {
+import com.abdallah.bakingapp.R;
 
-    public RecipesActivityFragment() {
+
+public class RecipesFragment extends Fragment {
+
+    public RecipesFragment() {
     }
 
     @Override
