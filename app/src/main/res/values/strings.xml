@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">Baking App</string>
+    <string name="title_recipe_details">Recipe Details</string>
+    <string name="title_recipe_step_details">Step Details</string>
 
     <!-- Views Text -->
     <string name="recipe_servings_text">Servings: %d</string>
-    <string name="title_step_list">Steps</string>
-    <string name="title_step_detail">Step Detail</string>
     <!---->
 
     <!-- Msg -->
