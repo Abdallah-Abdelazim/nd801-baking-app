@@ -7,11 +7,11 @@ import org.parceler.Parcel;
 @Parcel
 public class Step {
 
-    private long id;
-    private String shortDescription;
-    private String description;
-    @SerializedName("videoURL") private String videoUrl;
-    @SerializedName("thumbnailURL") private String thumbnailUrl;
+    long id;
+    String shortDescription;
+    String description;
+    @SerializedName("videoURL") String videoUrl;
+    @SerializedName("thumbnailURL") String thumbnailUrl;
 
     public Step() {
         id = -1;
@@ -66,17 +66,11 @@ public class Step {
     }
 
     public boolean hasVideo() {
-        if (videoUrl != null && !videoUrl.equals("")) {
-            return true;
-        }
-        return false;
+        return (videoUrl != null && !videoUrl.equals(""));
     }
 
     public boolean hasThumbnail() {
-        if (thumbnailUrl != null && !thumbnailUrl.equals("")) {
-            return true;
-        }
-        return false;
+        return (thumbnailUrl != null && !thumbnailUrl.equals(""));
     }
 
     @Override

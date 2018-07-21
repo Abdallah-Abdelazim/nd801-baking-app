@@ -9,12 +9,12 @@ import java.util.Arrays;
 @Parcel
 public class Recipe {
 
-    private long id;
-    private String name;
-    private int servings;
-    @SerializedName("image") private String imageUrl;
-    private Ingredient [] ingredients;
-    private Step [] steps;
+    long id;
+    String name;
+    int servings;
+    @SerializedName("image") String imageUrl;
+    Ingredient [] ingredients;
+    Step [] steps;
 
     public Recipe() {
         id = -1;
@@ -78,10 +78,7 @@ public class Recipe {
     }
 
     public boolean hasImage() {
-        if (imageUrl != null && !imageUrl.equals("")) {
-            return true;
-        }
-        return false;
+        return (imageUrl != null && !imageUrl.equals(""));
     }
 
     @Override

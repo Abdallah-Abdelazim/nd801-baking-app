@@ -7,9 +7,9 @@ import org.parceler.Parcel;
 @Parcel
 public class Ingredient {
 
-    @SerializedName("ingredient") private String name;
-    private float quantity;
-    private String measure;
+    @SerializedName("ingredient") String name;
+    float quantity;
+    String measure;
 
     public Ingredient() {
     }

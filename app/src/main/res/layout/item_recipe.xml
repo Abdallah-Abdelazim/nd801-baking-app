@@ -65,7 +65,7 @@
             app:layout_constraintStart_toEndOf="@+id/imageView"
             app:layout_constraintTop_toTopOf="@+id/top_guideline"
             app:layout_constraintVertical_chainStyle="spread"
-            tools:text="Chessecake" />
+            tools:text="Cheesecake" />
 
         <TextView
             android:id="@+id/tv_recipe_servings"

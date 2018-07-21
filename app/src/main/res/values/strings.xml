@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Baking App</string>
+
+    <!-- Views Text -->
+    <string name="recipe_servings_text">Servings: %d</string>
+    <!---->
+
+    <!-- Msg -->
+
+    <!---->
+
+
 </resources>

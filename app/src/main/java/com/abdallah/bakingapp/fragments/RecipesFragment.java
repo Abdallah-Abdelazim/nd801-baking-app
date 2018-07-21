@@ -1,15 +1,17 @@
 package com.abdallah.bakingapp.fragments;
 
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.abdallah.bakingapp.R;
+import com.abdallah.bakingapp.adapters.RecipesAdapter;
 import com.abdallah.bakingapp.api.RecipeAPI;
 import com.abdallah.bakingapp.models.recipe.Recipe;
 import com.abdallah.bakingapp.utils.LogUtils;
@@ -28,16 +30,16 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public class RecipesFragment extends Fragment {
+public class RecipesFragment extends Fragment implements RecipesAdapter.ItemClickListener {
 
     private static final String TAG = RecipesFragment.class.getSimpleName();
 
-    private Unbinder unbinder;
-
     @BindView(R.id.rv_recipes) RecyclerView recipesRecyclerView;
     @BindInt(R.integer.recipes_grid_span_count) int gridSpanCount;
+    private Unbinder unbinder;
 
     private List<Recipe> recipes;
+    private RecipesAdapter adapter;
 
 
     public RecipesFragment() {
@@ -56,6 +58,13 @@ public class RecipesFragment extends Fragment {
 
     private void configureRecipesRecyclerView() {
 
+        recipesRecyclerView.setHasFixedSize(true);
+
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), gridSpanCount);
+        recipesRecyclerView.setLayoutManager(layoutManager);
+
+        adapter = new RecipesAdapter(this);
+        recipesRecyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -71,8 +80,7 @@ public class RecipesFragment extends Fragment {
                 Recipe [] recipesArray = gson.fromJson(response.toString(), Recipe[].class);
                 recipes = Arrays.asList(recipesArray);
 
-
-
+                adapter.swapRecipes(recipes);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -87,5 +95,12 @@ public class RecipesFragment extends Fragment {
         super.onDestroyView();
         unbinder.unbind();
         RecipeAPI.cancelOngoingRequests(getContext());
+    }
+
+    @Override
+    public void onRecyclerViewItemClick(int clickedItemIndex) {
+        LogUtils.d(TAG, "Clicked item index = " + clickedItemIndex);
+
+
     }
 }
