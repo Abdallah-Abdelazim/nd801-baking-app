@@ -23,6 +23,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activities.RecipeDetailsActivity"
+            android:label="@string/title_step_list"
+            android:parentActivityName=".activities.RecipesActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.abdallah.bakingapp.activities.RecipesActivity" />
+        </activity>
+        <activity
+            android:name=".activities.RecipeStepDetailsActivity"
+            android:label="@string/title_step_detail"
+            android:parentActivityName=".activities.RecipeDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.abdallah.bakingapp.activities.RecipeDetailsActivity" />
+        </activity>
     </application>
 
 </manifest>
