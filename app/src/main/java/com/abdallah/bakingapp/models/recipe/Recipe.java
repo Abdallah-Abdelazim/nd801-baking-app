@@ -2,6 +2,11 @@ package com.abdallah.bakingapp.models.recipe;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.parceler.Parcel;
+
+import java.util.Arrays;
+
+@Parcel
 public class Recipe {
 
     private long id;
@@ -10,6 +15,10 @@ public class Recipe {
     @SerializedName("image") private String imageUrl;
     private Ingredient [] ingredients;
     private Step [] steps;
+
+    public Recipe() {
+        id = -1;
+    }
 
     public Recipe(long id, String name, int servings, String imageUrl, Ingredient[] ingredients, Step[] steps) {
         this.id = id;
@@ -73,5 +82,17 @@ public class Recipe {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return "Recipe{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", servings=" + servings +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", ingredients=" + Arrays.toString(ingredients) +
+                ", steps=" + Arrays.toString(steps) +
+                '}';
     }
 }

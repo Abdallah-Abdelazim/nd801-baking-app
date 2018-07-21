@@ -2,13 +2,19 @@ package com.abdallah.bakingapp.models.recipe;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.parceler.Parcel;
+
+@Parcel
 public class Ingredient {
 
     @SerializedName("ingredient") private String name;
-    private int quantity;
+    private float quantity;
     private String measure;
 
-    public Ingredient(String name, int quantity, String measure) {
+    public Ingredient() {
+    }
+
+    public Ingredient(String name, float quantity, String measure) {
         this.name = name;
         this.quantity = quantity;
         this.measure = measure;
@@ -22,11 +28,11 @@ public class Ingredient {
         this.name = name;
     }
 
-    public int getQuantity() {
+    public float getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(float quantity) {
         this.quantity = quantity;
     }
 
@@ -36,5 +42,14 @@ public class Ingredient {
 
     public void setMeasure(String measure) {
         this.measure = measure;
+    }
+
+    @Override
+    public String toString() {
+        return "Ingredient{" +
+                "name='" + name + '\'' +
+                ", quantity=" + quantity +
+                ", measure='" + measure + '\'' +
+                '}';
     }
 }

@@ -2,6 +2,9 @@ package com.abdallah.bakingapp.models.recipe;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.parceler.Parcel;
+
+@Parcel
 public class Step {
 
     private long id;
@@ -9,6 +12,10 @@ public class Step {
     private String description;
     @SerializedName("videoURL") private String videoUrl;
     @SerializedName("thumbnailURL") private String thumbnailUrl;
+
+    public Step() {
+        id = -1;
+    }
 
     public Step(long id, String shortDescription, String description, String videoUrl, String thumbnailUrl) {
         this.id = id;
@@ -70,5 +77,16 @@ public class Step {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return "Step{" +
+                "id=" + id +
+                ", shortDescription='" + shortDescription + '\'' +
+                ", description='" + description + '\'' +
+                ", videoUrl='" + videoUrl + '\'' +
+                ", thumbnailUrl='" + thumbnailUrl + '\'' +
+                '}';
     }
 }
