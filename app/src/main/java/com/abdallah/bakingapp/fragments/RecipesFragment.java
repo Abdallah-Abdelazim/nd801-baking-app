@@ -1,15 +1,18 @@
 package com.abdallah.bakingapp.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.abdallah.bakingapp.R;
+import com.abdallah.bakingapp.activities.RecipeDetailsActivity;
 import com.abdallah.bakingapp.adapters.RecipesAdapter;
 import com.abdallah.bakingapp.api.RecipeAPI;
 import com.abdallah.bakingapp.models.recipe.Recipe;
@@ -38,10 +41,19 @@ public class RecipesFragment extends Fragment implements RecipesAdapter.ItemClic
     private Unbinder unbinder;
 
     private List<Recipe> recipes;
-    private RecipesAdapter adapter;
+    private RecipesAdapter recipesAdapter;
 
 
     public RecipesFragment() {
+    }
+
+    /**
+     * Factory method to facilitate creating instances of this fragment.
+     * @return An instance of RecipesFragment
+     */
+    public static RecipesFragment newInstance() {
+        RecipesFragment fragment = new RecipesFragment();
+        return fragment;
     }
 
     @Override
@@ -50,20 +62,20 @@ public class RecipesFragment extends Fragment implements RecipesAdapter.ItemClic
         View fragmentView = inflater.inflate(R.layout.fragment_recipes, container, false);
         unbinder = ButterKnife.bind(this, fragmentView);
 
-        configureRecipesRecyclerView();
+        setupRecipesRecyclerView();
 
         return fragmentView;
     }
 
-    private void configureRecipesRecyclerView() {
+    private void setupRecipesRecyclerView() {
 
         recipesRecyclerView.setHasFixedSize(true);
 
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), gridSpanCount);
         recipesRecyclerView.setLayoutManager(layoutManager);
 
-        adapter = new RecipesAdapter(this);
-        recipesRecyclerView.setAdapter(adapter);
+        recipesAdapter = new RecipesAdapter(this);
+        recipesRecyclerView.setAdapter(recipesAdapter);
     }
 
     @Override
@@ -79,12 +91,12 @@ public class RecipesFragment extends Fragment implements RecipesAdapter.ItemClic
                 Recipe [] recipesArray = gson.fromJson(response.toString(), Recipe[].class);
                 recipes = Arrays.asList(recipesArray);
 
-                adapter.swapRecipes(recipes);
+                recipesAdapter.swapRecipes(recipes);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                LogUtils.d(TAG, error);
+                Log.e(TAG, error.toString());
             }
         });
     }
@@ -97,9 +109,10 @@ public class RecipesFragment extends Fragment implements RecipesAdapter.ItemClic
     }
 
     @Override
-    public void onRecyclerViewItemClick(int clickedItemIndex) {
-        LogUtils.d(TAG, "Clicked item index = " + clickedItemIndex);
+    public void onRecyclerViewItemClicked(int clickedItemIndex) {
+        LogUtils.d(TAG, "Clicked recipe index = " + clickedItemIndex);
 
-
+        Intent intent = RecipeDetailsActivity.getStartIntent(getContext(), recipes.get(clickedItemIndex));
+        startActivity(intent);
     }
 }

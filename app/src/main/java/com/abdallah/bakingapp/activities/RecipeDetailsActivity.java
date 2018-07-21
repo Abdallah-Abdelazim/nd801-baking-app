@@ -1,14 +1,25 @@
 package com.abdallah.bakingapp.activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.abdallah.bakingapp.R;
+import com.abdallah.bakingapp.adapters.RecipeStepsAdapter;
+import com.abdallah.bakingapp.models.recipe.Ingredient;
+import com.abdallah.bakingapp.models.recipe.Recipe;
+import com.abdallah.bakingapp.utils.LogUtils;
+
+import org.parceler.Parcels;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,10 +32,13 @@ import butterknife.ButterKnife;
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class RecipeDetailsActivity extends AppCompatActivity {
+public class RecipeDetailsActivity extends AppCompatActivity implements RecipeStepsAdapter.ItemClickListener {
 
     private static final String TAG = RecipeDetailsActivity.class.getSimpleName();
 
+    public static final String EXTRA_RECIPE = "com.abdallah.bakingapp.extras.EXTRA_RECIPE";
+
+    @BindView(R.id.tv_ingredients) TextView ingredientsTextView;
     @BindView(R.id.rv_steps) RecyclerView stepsRecyclerView;
 
     /**
@@ -32,6 +46,21 @@ public class RecipeDetailsActivity extends AppCompatActivity {
      * device.
      */
     private boolean mTwoPane;
+
+    private Recipe recipe;
+    private RecipeStepsAdapter stepsAdapter;
+
+    /**
+     * Factory method to facilitate creating explicit intents to be used to start this activity.
+     * @param context intent context.
+     * @param recipe intent extra.
+     * @return intent instance that can be used to start this activity.
+     */
+    public static Intent getStartIntent(Context context, Recipe recipe) {
+        Intent intent = new Intent(context, RecipeDetailsActivity.class);
+        intent.putExtra(RecipeDetailsActivity.EXTRA_RECIPE, Parcels.wrap(recipe));
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +70,6 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitle(getTitle());
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -57,7 +85,39 @@ public class RecipeDetailsActivity extends AppCompatActivity {
             mTwoPane = true;
         }
 
-        setupRecyclerView();
+        recipe = Parcels.unwrap(getIntent().getParcelableExtra(EXTRA_RECIPE));
+
+        setTitle(recipe.getName());
+        setupIngredientsTextView();
+        setupStepsRecyclerView();
+    }
+
+    private void setupIngredientsTextView() {
+        StringBuilder strBuilder = new StringBuilder();
+        for (Ingredient ingredient : recipe.getIngredients()) {
+            strBuilder.append(
+                    getString(R.string.ingredient_item, ingredient.getName()
+                            , ingredient.getFormattedQuantity(), ingredient.getMeasure())
+            );
+        }
+        ingredientsTextView.setText(strBuilder);
+    }
+
+    private void setupStepsRecyclerView() {
+
+        stepsRecyclerView.setHasFixedSize(false);
+
+        stepsRecyclerView.setNestedScrollingEnabled(false);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        stepsRecyclerView.setLayoutManager(layoutManager);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this,
+                layoutManager.getOrientation());
+        stepsRecyclerView.addItemDecoration(dividerItemDecoration);
+
+        stepsAdapter = new RecipeStepsAdapter(recipe.getSteps(), this);
+        stepsRecyclerView.setAdapter(stepsAdapter);
     }
 
     @Override
@@ -77,7 +137,10 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupRecyclerView() {
+    @Override
+    public void onRecyclerViewItemClicked(int clickedItemIndex) {
+        LogUtils.d(TAG, "Clicked step index = " + clickedItemIndex);
+
 
     }
 

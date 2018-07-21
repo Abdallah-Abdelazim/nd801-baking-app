@@ -6,29 +6,28 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.abdallah.bakingapp.R;
-import com.abdallah.bakingapp.models.recipe.Recipe;
-
-import java.util.List;
+import com.abdallah.bakingapp.models.recipe.Step;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHolder> {
+public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.ViewHolder> {
 
-    private static final String TAG = RecipesAdapter.class.getSimpleName();
+    private static final String TAG = RecipeStepsAdapter.class.getSimpleName();
 
-    private List<Recipe> recipes;
+    private Step [] steps;
     private final ItemClickListener itemClickListener;
 
-    public RecipesAdapter(List<Recipe> recipes, ItemClickListener itemClickListener) {
-        this.recipes = recipes;
+    public RecipeStepsAdapter(Step[] steps, ItemClickListener itemClickListener) {
+        this.steps = steps;
         this.itemClickListener = itemClickListener;
     }
 
-    public RecipesAdapter(ItemClickListener itemClickListener) {
+    public RecipeStepsAdapter(ItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
     }
 
@@ -36,7 +35,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_recipe, parent, false);
+                .inflate(R.layout.item_step, parent, false);
 
         ViewHolder vh = new ViewHolder(itemView);
         return vh;
@@ -44,29 +43,31 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Recipe currentRecipe = recipes.get(position);
+        Step currentStep = steps[position];
         Context ctx = holder.itemView.getContext();
 
-        holder.recipeNameTextView.setText(currentRecipe.getName());
-        holder.recipeServingsTextView.setText(
-                ctx.getString(R.string.recipe_servings_text, currentRecipe.getServings()));
+        holder.stepIdTextView.setText(ctx.getString(R.string.recipe_step_id_text, currentStep.getId()));
+        holder.shortDescriptionTextView.setText(currentStep.getShortDescription());
+        if (!currentStep.hasVideo()) holder.hasVideoImageView.setVisibility(View.GONE);
     }
 
     @Override
     public int getItemCount() {
-        if (recipes == null) return 0;
-        return recipes.size();
+        if (steps == null) return 0;
+        return steps.length;
     }
 
-    public void swapRecipes(List<Recipe> recipes) {
-        this.recipes = recipes;
+    public void swapSteps(Step [] steps) {
+        this.steps = steps;
         notifyDataSetChanged();
     }
 
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @BindView(R.id.tv_recipe_name) TextView recipeNameTextView;
-        @BindView(R.id.tv_recipe_servings) TextView recipeServingsTextView;
+        @BindView(R.id.tv_step_id) TextView stepIdTextView;
+        @BindView(R.id.tv_short_description) TextView shortDescriptionTextView;
+        @BindView(R.id.iv_has_video) ImageView hasVideoImageView;
 
         public ViewHolder(View itemView) {
             super(itemView);

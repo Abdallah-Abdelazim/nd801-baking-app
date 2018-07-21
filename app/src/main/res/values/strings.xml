@@ -5,11 +5,17 @@
 
     <!-- Views Text -->
     <string name="recipe_servings_text">Servings: %d</string>
+    <string name="ingredients_label">Ingredients</string>
+    <string name="ingredient_item">• %1$s (%2$s %3$s)\n</string> <!-- • {name} ({quantity} {measure}) -->
+    <string name="recipe_step_id_text">%d.</string>
     <!---->
 
     <!-- Msg -->
 
     <!---->
 
+    <!-- Content Descriptions -->
+    <string name="has_video_icon_content_description">Step has a video</string>
+    <!---->
 
 </resources>

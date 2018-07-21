@@ -32,6 +32,15 @@ public class Ingredient {
         return quantity;
     }
 
+    public String getFormattedQuantity() {
+        if (quantity == (int)quantity) {
+            return String.valueOf((int)quantity);
+        }
+        else {
+            return String.valueOf(quantity);
+        }
+    }
+
     public void setQuantity(float quantity) {
         this.quantity = quantity;
     }
