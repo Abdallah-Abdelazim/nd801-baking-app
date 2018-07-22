@@ -28,7 +28,8 @@
             android:name=".activities.RecipeDetailsActivity"
             android:label="@string/title_recipe_details"
             android:parentActivityName=".activities.RecipesActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTop">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.abdallah.bakingapp.activities.RecipesActivity" />
@@ -37,7 +38,8 @@
             android:name=".activities.RecipeStepDetailsActivity"
             android:label="@string/title_recipe_step_details"
             android:parentActivityName=".activities.RecipeDetailsActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTop">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.abdallah.bakingapp.activities.RecipeDetailsActivity" />

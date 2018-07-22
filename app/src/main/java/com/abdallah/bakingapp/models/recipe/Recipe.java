@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import org.parceler.Parcel;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Parcel
 public class Recipe {
@@ -13,14 +14,15 @@ public class Recipe {
     String name;
     int servings;
     @SerializedName("image") String imageUrl;
-    Ingredient [] ingredients;
-    Step [] steps;
+    List<Ingredient> ingredients;
+    List<Step> steps;
 
     public Recipe() {
         id = -1;
     }
 
-    public Recipe(long id, String name, int servings, String imageUrl, Ingredient[] ingredients, Step[] steps) {
+    public Recipe(long id, String name, int servings, String imageUrl, List<Ingredient> ingredients
+            , List<Step> steps) {
         this.id = id;
         this.name = name;
         this.servings = servings;
@@ -61,19 +63,19 @@ public class Recipe {
         this.imageUrl = imageUrl;
     }
 
-    public Ingredient[] getIngredients() {
+    public List<Ingredient> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(Ingredient[] ingredients) {
+    public void setIngredients(List<Ingredient> ingredients) {
         this.ingredients = ingredients;
     }
 
-    public Step[] getSteps() {
+    public List<Step> getSteps() {
         return steps;
     }
 
-    public void setSteps(Step[] steps) {
+    public void setSteps(List<Step> steps) {
         this.steps = steps;
     }
 
@@ -88,8 +90,8 @@ public class Recipe {
                 ", name='" + name + '\'' +
                 ", servings=" + servings +
                 ", imageUrl='" + imageUrl + '\'' +
-                ", ingredients=" + Arrays.toString(ingredients) +
-                ", steps=" + Arrays.toString(steps) +
+                ", ingredients=" + ingredients +
+                ", steps=" + steps +
                 '}';
     }
 }

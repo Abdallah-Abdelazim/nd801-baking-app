@@ -86,9 +86,14 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
 
         recipe = Parcels.unwrap(getIntent().getParcelableExtra(EXTRA_RECIPE));
 
-        setTitle(recipe.getName());
-        setupIngredientsTextView();
-        setupStepsRecyclerView();
+        if (recipe != null) {
+            setTitle(recipe.getName());
+            setupIngredientsTextView();
+            setupStepsRecyclerView();
+        }
+        else {
+            throw new RuntimeException("No 'recipe' was found in the intent extras!");
+        }
     }
 
     private void setupIngredientsTextView() {

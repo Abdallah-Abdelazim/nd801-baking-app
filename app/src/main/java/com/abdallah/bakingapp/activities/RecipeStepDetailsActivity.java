@@ -12,8 +12,13 @@ import android.view.MenuItem;
 import com.abdallah.bakingapp.R;
 import com.abdallah.bakingapp.fragments.RecipeStepDetailsFragment;
 import com.abdallah.bakingapp.models.recipe.Step;
+import com.abdallah.bakingapp.utils.LogUtils;
 
 import org.parceler.Parcels;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -31,7 +36,7 @@ public class RecipeStepDetailsActivity extends AppCompatActivity {
     public static final String EXTRA_STEPS = "com.abdallah.bakingapp.extras.EXTRA_STEPS";
     public static final String EXTRA_CURRENT_STEP_INDEX = "com.abdallah.bakingapp.extras.EXTRA_CURRENT_STEP_INDEX";
 
-    private Step [] steps;
+    private List<Step> steps;
     private int currentStepIndex;
 
     /**
@@ -40,9 +45,9 @@ public class RecipeStepDetailsActivity extends AppCompatActivity {
      * @param steps intent extra.
      * @return intent instance that can be used to start this activity.
      */
-    public static Intent getStartIntent(Context context, Step [] steps, int currentStepIndex) {
+    public static Intent getStartIntent(Context context, List<Step> steps, int currentStepIndex) {
         Intent intent = new Intent(context, RecipeStepDetailsActivity.class);
-        intent.putExtra(EXTRA_STEPS, steps);
+        intent.putExtra(EXTRA_STEPS, Parcels.wrap(steps));
         intent.putExtra(EXTRA_CURRENT_STEP_INDEX, currentStepIndex);
         return intent;
     }
@@ -88,7 +93,7 @@ public class RecipeStepDetailsActivity extends AppCompatActivity {
             }
         }
         else {
-            throw new IllegalStateException("No 'steps' or 'currentStepIndex' were found in the intent extras!");
+            throw new RuntimeException("No 'steps' or 'currentStepIndex' were found in the intent extras!");
         }
 
     }

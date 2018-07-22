@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.abdallah.bakingapp.R;
 import com.abdallah.bakingapp.models.recipe.Step;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -19,10 +21,10 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
 
     private static final String TAG = RecipeStepsAdapter.class.getSimpleName();
 
-    private Step [] steps;
+    private List<Step> steps;
     private final ItemClickListener itemClickListener;
 
-    public RecipeStepsAdapter(Step[] steps, ItemClickListener itemClickListener) {
+    public RecipeStepsAdapter(List<Step> steps, ItemClickListener itemClickListener) {
         this.steps = steps;
         this.itemClickListener = itemClickListener;
     }
@@ -43,7 +45,7 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Step currentStep = steps[position];
+        Step currentStep = steps.get(position);
         Context ctx = holder.itemView.getContext();
 
         holder.stepIdTextView.setText(ctx.getString(R.string.recipe_step_id_text, currentStep.getId()));
@@ -54,10 +56,10 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
     @Override
     public int getItemCount() {
         if (steps == null) return 0;
-        return steps.length;
+        return steps.size();
     }
 
-    public void swapSteps(Step [] steps) {
+    public void swapSteps(List<Step> steps) {
         this.steps = steps;
         notifyDataSetChanged();
     }
