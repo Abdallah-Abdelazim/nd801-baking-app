@@ -121,7 +121,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
                 layoutManager.getOrientation());
         stepsRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        stepsAdapter = new RecipeStepsAdapter(recipe.getSteps(), this);
+        stepsAdapter = new RecipeStepsAdapter(recipe.getSteps(), isTwoPane, this);
         stepsRecyclerView.setAdapter(stepsAdapter);
     }
 

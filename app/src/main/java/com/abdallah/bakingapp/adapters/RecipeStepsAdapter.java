@@ -3,6 +3,7 @@ package com.abdallah.bakingapp.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,14 +23,19 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
     private static final String TAG = RecipeStepsAdapter.class.getSimpleName();
 
     private List<Step> steps;
+    private boolean isTwoPane;
     private final ItemClickListener itemClickListener;
 
-    public RecipeStepsAdapter(List<Step> steps, ItemClickListener itemClickListener) {
+    private int selectedPos = 0;
+
+    public RecipeStepsAdapter(List<Step> steps, boolean isTwoPane, ItemClickListener itemClickListener) {
         this.steps = steps;
+        this.isTwoPane = isTwoPane;
         this.itemClickListener = itemClickListener;
     }
 
-    public RecipeStepsAdapter(ItemClickListener itemClickListener) {
+    public RecipeStepsAdapter(boolean isTwoPane, ItemClickListener itemClickListener) {
+        this.isTwoPane = isTwoPane;
         this.itemClickListener = itemClickListener;
     }
 
@@ -51,6 +57,9 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
         holder.stepIdTextView.setText(ctx.getString(R.string.recipe_step_id_text, currentStep.getId()));
         holder.shortDescriptionTextView.setText(currentStep.getShortDescription());
         if (!currentStep.hasVideo()) holder.hasVideoImageView.setVisibility(View.GONE);
+        else holder.hasVideoImageView.setVisibility(View.VISIBLE);
+
+        if (isTwoPane) holder.itemView.setSelected(selectedPos == position);
     }
 
     @Override
@@ -80,6 +89,12 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
 
         @Override
         public void onClick(View v) {
+            if (isTwoPane) {
+                notifyItemChanged(selectedPos);
+                selectedPos = getLayoutPosition();
+                notifyItemChanged(selectedPos);
+            }
+
             int clickedItemIndex = getAdapterPosition();
             itemClickListener.onRecyclerViewItemClicked(clickedItemIndex);
         }
