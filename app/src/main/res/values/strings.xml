@@ -8,6 +8,8 @@
     <string name="ingredients_label">Ingredients</string>
     <string name="ingredient_item">• %1$s (%2$s %3$s)\n</string> <!-- • {name} ({quantity} {measure}) -->
     <string name="recipe_step_id_text">%d.</string>
+    <string name="prev_step_button_text">Previous Step</string>
+    <string name="next_step_button_text">Next Step</string>
     <!---->
 
     <!-- Msg -->

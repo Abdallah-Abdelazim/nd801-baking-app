@@ -3,7 +3,6 @@ package com.abdallah.bakingapp.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -45,7 +44,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
-    private boolean mTwoPane;
+    private boolean isTwoPane;
 
     private Recipe recipe;
     private RecipeStepsAdapter stepsAdapter;
@@ -82,7 +81,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
             // large-screen layouts (res/values-w900dp).
             // If this view is present, then the
             // activity should be in two-pane mode.
-            mTwoPane = true;
+            isTwoPane = true;
         }
 
         recipe = Parcels.unwrap(getIntent().getParcelableExtra(EXTRA_RECIPE));
@@ -121,27 +120,24 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            // This ID represents the Home or Up button. In the case of this
-            // activity, the Up button is shown. Use NavUtils to allow users
-            // to navigate up one level in the application structure. For
-            // more details, see the Navigation pattern on Android Design:
-            //
-            // http://developer.android.com/design/patterns/navigation.html#up-vs-back
-            //
-            NavUtils.navigateUpFromSameTask(this);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onRecyclerViewItemClicked(int clickedItemIndex) {
         LogUtils.d(TAG, "Clicked step index = " + clickedItemIndex);
 
+        if (isTwoPane) {
+            // TODO
+        }
+        else {
+            Intent intent = RecipeStepDetailsActivity.getStartIntent(this
+                    , recipe.getSteps(), clickedItemIndex);
+            startActivity(intent);
+        }
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        return super.onOptionsItemSelected(item);
     }
 
 //    public static class SimpleItemRecyclerViewAdapter
@@ -149,12 +145,12 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
 //
 //        private final ItemListActivity mParentActivity;
 //        private final List<DummyContent.DummyItem> mValues;
-//        private final boolean mTwoPane;
+//        private final boolean isTwoPane;
 //        private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
 //                DummyContent.DummyItem item = (DummyContent.DummyItem) view.getTag();
-//                if (mTwoPane) {
+//                if (isTwoPane) {
 //                    Bundle arguments = new Bundle();
 //                    arguments.putString(RecipeStepDetailsFragment.ARG_ITEM_ID, item.id);
 //                    RecipeStepDetailsFragment fragment = new RecipeStepDetailsFragment();
@@ -177,7 +173,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
 //                                      boolean twoPane) {
 //            mValues = items;
 //            mParentActivity = parent;
-//            mTwoPane = twoPane;
+//            isTwoPane = twoPane;
 //        }
 //
 //        @Override

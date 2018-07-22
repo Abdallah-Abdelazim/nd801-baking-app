@@ -115,4 +115,7 @@ public class RecipesFragment extends Fragment implements RecipesAdapter.ItemClic
         Intent intent = RecipeDetailsActivity.getStartIntent(getContext(), recipes.get(clickedItemIndex));
         startActivity(intent);
     }
+
+    // TODO loading progress bar & error snackbar
+    // TODO save instance state for the entire app
 }
