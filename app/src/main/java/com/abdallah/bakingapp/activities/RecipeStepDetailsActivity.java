@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.abdallah.bakingapp.R;
 import com.abdallah.bakingapp.fragments.RecipeStepDetailsFragment;
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -35,6 +38,12 @@ public class RecipeStepDetailsActivity extends AppCompatActivity {
 
     public static final String EXTRA_STEPS = "com.abdallah.bakingapp.extras.EXTRA_STEPS";
     public static final String EXTRA_CURRENT_STEP_INDEX = "com.abdallah.bakingapp.extras.EXTRA_CURRENT_STEP_INDEX";
+
+    private static final String STATE_NEXT_STEP_BUTTON_ENABLED = "STATE_NEXT_STEP_BUTTON_ENABLED";
+    private static final String STATE_PREV_STEP_BUTTON_ENABLED = "STATE_PREV_STEP_BUTTON_ENABLED";
+
+    @BindView(R.id.btn_prev_step) Button prevStepButton;
+    @BindView(R.id.btn_next_step) Button nextStepButton;
 
     private List<Step> steps;
     private int currentStepIndex;
@@ -82,14 +91,13 @@ public class RecipeStepDetailsActivity extends AppCompatActivity {
             if (savedInstanceState == null) {
                 // Create the detail fragment and add it to the activity
                 // using a fragment transaction.
-//                Bundle arguments = new Bundle();
-//                arguments.putString(RecipeStepDetailsFragment.ARG_ITEM_ID,
-//                        getIntent().getStringExtra(RecipeStepDetailsFragment.ARG_ITEM_ID));
-//                RecipeStepDetailsFragment fragment = new RecipeStepDetailsFragment();
-//                fragment.setArguments(arguments);
-//                getSupportFragmentManager().beginTransaction()
-//                        .add(R.id.step_details_fragment_container, fragment)
-//                        .commit();
+                RecipeStepDetailsFragment recipeStepDetailsFragment =
+                        RecipeStepDetailsFragment.newInstance(steps.get(currentStepIndex));
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.step_details_fragment_container, recipeStepDetailsFragment)
+                        .commit();
+                if (currentStepIndex == 0) prevStepButton.setEnabled(false);  // end has been reached
+                if (currentStepIndex == steps.size()-1) nextStepButton.setEnabled(false); // end has been reached also
             }
         }
         else {
@@ -100,12 +108,39 @@ public class RecipeStepDetailsActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_prev_step)
     void openPreviousStep() {
-        // TODO
+            currentStepIndex--;
+            changeDisplayedStep();
+            if (currentStepIndex == 0) prevStepButton.setEnabled(false);  // end has been reached
+            if (!nextStepButton.isEnabled()) nextStepButton.setEnabled(true);
     }
 
     @OnClick(R.id.btn_next_step)
     void openNextStep() {
-        // TODO
+            currentStepIndex++;
+            changeDisplayedStep();
+            if (currentStepIndex == steps.size()-1) nextStepButton.setEnabled(false); // end has been reached
+            if (!prevStepButton.isEnabled()) prevStepButton.setEnabled(true);
     }
 
+    private void changeDisplayedStep() {
+        RecipeStepDetailsFragment recipeStepDetailsFragment =
+                RecipeStepDetailsFragment.newInstance(steps.get(currentStepIndex));
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.step_details_fragment_container, recipeStepDetailsFragment)
+                .commit();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        nextStepButton.setEnabled(savedInstanceState.getBoolean(STATE_NEXT_STEP_BUTTON_ENABLED));
+        prevStepButton.setEnabled(savedInstanceState.getBoolean(STATE_PREV_STEP_BUTTON_ENABLED));
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(STATE_NEXT_STEP_BUTTON_ENABLED, nextStepButton.isEnabled());
+        outState.putBoolean(STATE_PREV_STEP_BUTTON_ENABLED, prevStepButton.isEnabled());
+    }
 }

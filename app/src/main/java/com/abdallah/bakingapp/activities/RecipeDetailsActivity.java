@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.abdallah.bakingapp.R;
 import com.abdallah.bakingapp.adapters.RecipeStepsAdapter;
+import com.abdallah.bakingapp.fragments.RecipeStepDetailsFragment;
 import com.abdallah.bakingapp.models.recipe.Ingredient;
 import com.abdallah.bakingapp.models.recipe.Recipe;
 import com.abdallah.bakingapp.utils.LogUtils;
@@ -129,7 +130,11 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
         LogUtils.d(TAG, "Clicked step index = " + clickedItemIndex);
 
         if (isTwoPane) {
-            // TODO
+            RecipeStepDetailsFragment recipeStepDetailsFragment =
+                    RecipeStepDetailsFragment.newInstance(recipe.getSteps().get(clickedItemIndex));
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.step_details_fragment_container, recipeStepDetailsFragment)
+                    .commit();
         }
         else {
             Intent intent = RecipeStepDetailsActivity.getStartIntent(this
@@ -142,75 +147,9 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
+        // TODO app widget stuff
+
         return super.onOptionsItemSelected(item);
     }
 
-//    public static class SimpleItemRecyclerViewAdapter
-//            extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
-//
-//        private final ItemListActivity mParentActivity;
-//        private final List<DummyContent.DummyItem> mValues;
-//        private final boolean isTwoPane;
-//        private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                DummyContent.DummyItem item = (DummyContent.DummyItem) view.getTag();
-//                if (isTwoPane) {
-//                    Bundle arguments = new Bundle();
-//                    arguments.putString(RecipeStepDetailsFragment.ARG_ITEM_ID, item.id);
-//                    RecipeStepDetailsFragment fragment = new RecipeStepDetailsFragment();
-//                    fragment.setArguments(arguments);
-//                    mParentActivity.getSupportFragmentManager().beginTransaction()
-//                            .replace(R.id.step_details_fragment_container, fragment)
-//                            .commit();
-//                } else {
-//                    Context context = view.getContext();
-//                    Intent intent = new Intent(context, RecipeStepDetailsActivity.class);
-//                    intent.putExtra(RecipeStepDetailsFragment.ARG_ITEM_ID, item.id);
-//
-//                    context.startActivity(intent);
-//                }
-//            }
-//        };
-//
-//        SimpleItemRecyclerViewAdapter(RecipeDetailsActivity parent,
-//                                      List<DummyContent.DummyItem> items,
-//                                      boolean twoPane) {
-//            mValues = items;
-//            mParentActivity = parent;
-//            isTwoPane = twoPane;
-//        }
-//
-//        @Override
-//        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//            View view = LayoutInflater.from(parent.getContext())
-//                    .inflate(R.layout.item_step, parent, false);
-//            return new ViewHolder(view);
-//        }
-//
-//        @Override
-//        public void onBindViewHolder(final ViewHolder holder, int position) {
-//            holder.mIdView.setText(mValues.get(position).id);
-//            holder.mContentView.setText(mValues.get(position).content);
-//
-//            holder.itemView.setTag(mValues.get(position));
-//            holder.itemView.setOnClickListener(mOnClickListener);
-//        }
-//
-//        @Override
-//        public int getItemCount() {
-//            return mValues.size();
-//        }
-//
-//        class ViewHolder extends RecyclerView.ViewHolder {
-//            final TextView mIdView;
-//            final TextView mContentView;
-//
-//            ViewHolder(View view) {
-//                super(view);
-//                mIdView = (TextView) view.findViewById(R.id.id_text);
-//                mContentView = (TextView) view.findViewById(R.id.content);
-//            }
-//        }
-//    }
 }

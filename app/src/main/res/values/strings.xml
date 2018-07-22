@@ -13,7 +13,12 @@
     <!---->
 
     <!-- Msg -->
-
+    <string name="msg_last_step_reached">You have reached the last step!</string>
+    <string name="msg_first_step_Reached">You have reached the first step!</string>
+    <string name="error_loading_network_problem">Error loading! Please check your network connection</string>
+    <string name="error_loading_no_internet">Please turn on you WIFI or cellular data</string>
+    <string name="error_loading_general">An error occurred!</string>
+    <string name="action_retry">RETRY</string>
     <!---->
 
     <!-- Content Descriptions -->

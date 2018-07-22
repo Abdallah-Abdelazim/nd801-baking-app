@@ -5,12 +5,18 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.abdallah.bakingapp.R;
 import com.abdallah.bakingapp.activities.RecipeDetailsActivity;
 import com.abdallah.bakingapp.activities.RecipeStepDetailsActivity;
+import com.abdallah.bakingapp.models.recipe.Step;
 
+import org.parceler.Parcels;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * A fragment representing a single Step detail screen.
@@ -20,10 +26,15 @@ import butterknife.ButterKnife;
  */
 public class RecipeStepDetailsFragment extends Fragment {
     /**
-     * The fragment argument representing the item ID that this fragment
+     * The fragment argument representing the Step instance that this fragment
      * represents.
      */
-    public static final String ARG_ITEM_ID = "item_id";
+    public static final String ARG_STEP = "item_id";
+
+    @BindView(R.id.tv_step_description) TextView stepDescriptionTextView;
+    private Unbinder unbinder;
+
+    private Step step;
 
 
     /**
@@ -33,12 +44,25 @@ public class RecipeStepDetailsFragment extends Fragment {
     public RecipeStepDetailsFragment() {
     }
 
+    /**
+     * Factory method to facilitate creating instances of this fragment.
+     * @param step required fragment argument.
+     * @return an instance of RecipeStepDetailsFragment.
+     */
+    public static RecipeStepDetailsFragment newInstance(Step step) {
+        RecipeStepDetailsFragment fragment = new RecipeStepDetailsFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(ARG_STEP, Parcels.wrap(step));
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments().containsKey(ARG_ITEM_ID)) {
-
+        if (getArguments().containsKey(ARG_STEP)) {
+            step = Parcels.unwrap(getArguments().getParcelable(ARG_STEP));
         }
     }
 
@@ -47,8 +71,17 @@ public class RecipeStepDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View fragmentView = inflater.inflate(R.layout.fragment_recipe_step_details, container
                 , false);
-        ButterKnife.bind(this, fragmentView);
+        unbinder = ButterKnife.bind(this, fragmentView);
+
+        stepDescriptionTextView.setText(step.getDescription());
+        // TODO video player
 
         return fragmentView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }

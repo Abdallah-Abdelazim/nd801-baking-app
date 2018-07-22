@@ -43,21 +43,21 @@
             <Button
                 android:id="@+id/btn_prev_step"
                 style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawableStart="@drawable/ic_chevron_left"
-                android:drawableLeft="@drawable/ic_chevron_left"
+                android:drawableLeft="@drawable/prev_step_button_drawable"
+                android:drawableStart="@drawable/prev_step_button_drawable"
                 android:text="@string/prev_step_button_text" />
 
             <Button
                 android:id="@+id/btn_next_step"
                 style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawableEnd="@drawable/ic_chevron_right"
-                android:drawableRight="@drawable/ic_chevron_right"
+                android:drawableEnd="@drawable/next_step_button_drawable"
+                android:drawableRight="@drawable/next_step_button_drawable"
                 android:text="@string/next_step_button_text" />
         </LinearLayout>
     </LinearLayout>
