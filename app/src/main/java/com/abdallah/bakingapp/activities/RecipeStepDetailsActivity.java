@@ -33,8 +33,8 @@ public class RecipeStepDetailsActivity extends AppCompatActivity {
     public static final String EXTRA_STEPS = "com.abdallah.bakingapp.extras.EXTRA_STEPS";
     public static final String EXTRA_CURRENT_STEP_INDEX = "com.abdallah.bakingapp.extras.EXTRA_CURRENT_STEP_INDEX";
 
-    private static final String STATE_NEXT_STEP_BUTTON_ENABLED = "STATE_NEXT_STEP_BUTTON_ENABLED";
-    private static final String STATE_PREV_STEP_BUTTON_ENABLED = "STATE_PREV_STEP_BUTTON_ENABLED";
+    private static final String STATE_STEPS = "STATE_STEPS";
+    private static final String STATE_CURRENT_STEP_INDEX = "STATE_CURRENT_STEP_INDEX";
 
     @BindView(R.id.btn_prev_step) Button prevStepButton;
     @BindView(R.id.btn_next_step) Button nextStepButton;
@@ -69,10 +69,20 @@ public class RecipeStepDetailsActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        steps = Parcels.unwrap(getIntent().getParcelableExtra(EXTRA_STEPS));
-        currentStepIndex = getIntent().getIntExtra(EXTRA_CURRENT_STEP_INDEX, -1);
+        if (savedInstanceState == null) {
+            // get the 'steps' & 'currentStepIndex' from intent extras
+            steps = Parcels.unwrap(getIntent().getParcelableExtra(EXTRA_STEPS));
+            currentStepIndex = getIntent().getIntExtra(EXTRA_CURRENT_STEP_INDEX, -1);
+        }
+        else {
+            // get the 'steps' & 'currentStepIndex' from savedInstanceState
+            steps = Parcels.unwrap(savedInstanceState.getParcelable(STATE_STEPS));
+            currentStepIndex = savedInstanceState.getInt(STATE_CURRENT_STEP_INDEX);
+        }
 
         if (steps != null && currentStepIndex != -1) {
+            setTitle(steps.get(currentStepIndex).getShortDescription());
+
             // savedInstanceState is non-null when there is fragment state
             // saved from previous configurations of this activity
             // (e.g. when rotating the screen from portrait to landscape).
@@ -90,12 +100,13 @@ public class RecipeStepDetailsActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.step_details_fragment_container, recipeStepDetailsFragment)
                         .commit();
-                if (currentStepIndex == 0) prevStepButton.setEnabled(false);  // end has been reached
-                if (currentStepIndex == steps.size()-1) nextStepButton.setEnabled(false); // end has been reached also
             }
+
+            if (currentStepIndex == 0) prevStepButton.setEnabled(false);  // end has been reached
+            if (currentStepIndex == steps.size()-1) nextStepButton.setEnabled(false); // end has also been reached
         }
         else {
-            throw new RuntimeException("No 'steps' or 'currentStepIndex' were found in the intent extras!");
+            throw new RuntimeException("No 'steps' or 'currentStepIndex' were found in the intent extras or the saved instance state!");
         }
 
     }
@@ -117,6 +128,8 @@ public class RecipeStepDetailsActivity extends AppCompatActivity {
     }
 
     private void changeDisplayedStep() {
+        setTitle(steps.get(currentStepIndex).getShortDescription());
+
         RecipeStepDetailsFragment recipeStepDetailsFragment =
                 RecipeStepDetailsFragment.newInstance(steps.get(currentStepIndex));
         getSupportFragmentManager().beginTransaction()
@@ -125,16 +138,11 @@ public class RecipeStepDetailsActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        nextStepButton.setEnabled(savedInstanceState.getBoolean(STATE_NEXT_STEP_BUTTON_ENABLED));
-        prevStepButton.setEnabled(savedInstanceState.getBoolean(STATE_PREV_STEP_BUTTON_ENABLED));
-    }
-
-    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(STATE_NEXT_STEP_BUTTON_ENABLED, nextStepButton.isEnabled());
-        outState.putBoolean(STATE_PREV_STEP_BUTTON_ENABLED, prevStepButton.isEnabled());
+
+        outState.putParcelable(STATE_STEPS, Parcels.wrap(steps));
+        outState.putInt(STATE_CURRENT_STEP_INDEX, currentStepIndex);
     }
+
 }

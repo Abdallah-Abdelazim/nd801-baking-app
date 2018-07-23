@@ -9,12 +9,16 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.abdallah.bakingapp.R;
 import com.abdallah.bakingapp.activities.RecipeDetailsActivity;
 import com.abdallah.bakingapp.activities.RecipeStepDetailsActivity;
 import com.abdallah.bakingapp.models.recipe.Step;
+import com.abdallah.bakingapp.utils.GlideApp;
+import com.abdallah.bakingapp.utils.LogUtils;
+import com.bumptech.glide.Glide;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -42,6 +46,9 @@ import butterknife.Unbinder;
  * on handsets.
  */
 public class RecipeStepDetailsFragment extends Fragment {
+
+    private static final String TAG = RecipeStepDetailsFragment.class.getSimpleName();
+
     /**
      * The fragment argument representing the Step instance that this fragment
      * represents.
@@ -49,6 +56,7 @@ public class RecipeStepDetailsFragment extends Fragment {
     public static final String ARG_STEP = "item_id";
 
     @BindView(R.id.player_view) PlayerView playerView;
+    @BindView(R.id.iv_thumbnail) ImageView thumbnailImageView;
     @BindView(R.id.tv_step_description) TextView stepDescriptionTextView;
     private Unbinder unbinder;
 
@@ -96,8 +104,9 @@ public class RecipeStepDetailsFragment extends Fragment {
         if (!step.hasVideo()) {
             playerView.setVisibility(View.GONE);
         }
-
-        stepDescriptionTextView.setText(step.getDescription());
+        if (!step.hasThumbnail()) {
+            thumbnailImageView.setVisibility(View.GONE);
+        }
 
         return fragmentView;
     }
@@ -109,6 +118,16 @@ public class RecipeStepDetailsFragment extends Fragment {
         if (step.hasVideo()) {
             initializePlayer(Uri.parse(step.getVideoUrl()));
         }
+
+        if (step.hasThumbnail()) {
+            GlideApp.with(this)
+                    .asGif()
+                    .load(Uri.parse(step.getThumbnailUrl()))
+                    .placeholder(R.drawable.loading_img_placeholder)
+                    .into(thumbnailImageView);
+        }
+
+        stepDescriptionTextView.setText(step.getDescription());
     }
 
     /**
