@@ -8,4 +8,6 @@
     <color name="colorAccentDark">#c41c00</color>
     <color name="primaryTextColor">#000000</color>
     <color name="secondaryTextColor">#000000</color>
+
+    <color name="selected_step_item_background">#ffab91</color>
 </resources>

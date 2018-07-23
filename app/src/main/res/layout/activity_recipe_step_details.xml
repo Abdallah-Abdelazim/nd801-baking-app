@@ -46,8 +46,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawableLeft="@drawable/prev_step_button_drawable"
-                android:drawableStart="@drawable/prev_step_button_drawable"
+                android:drawableLeft="@drawable/selector_prev_step_button"
+                android:drawableStart="@drawable/selector_prev_step_button"
                 android:text="@string/prev_step_button_text" />
 
             <Button
@@ -56,8 +56,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawableEnd="@drawable/next_step_button_drawable"
-                android:drawableRight="@drawable/next_step_button_drawable"
+                android:drawableEnd="@drawable/selector_next_step_button"
+                android:drawableRight="@drawable/selector_next_step_button"
                 android:text="@string/next_step_button_text" />
         </LinearLayout>
     </LinearLayout>

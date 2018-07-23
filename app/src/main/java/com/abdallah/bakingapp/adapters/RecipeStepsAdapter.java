@@ -18,6 +18,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * Step RecyclerView adapter. This adapter highlights the selected item while in two pane mode.
+ * But doesn't highlight it in single pane mode.
+ */
 public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.ViewHolder> {
 
     private static final String TAG = RecipeStepsAdapter.class.getSimpleName();
@@ -30,6 +34,14 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
 
     public RecipeStepsAdapter(List<Step> steps, boolean isTwoPane, ItemClickListener itemClickListener) {
         this.steps = steps;
+        this.isTwoPane = isTwoPane;
+        this.itemClickListener = itemClickListener;
+    }
+
+    public RecipeStepsAdapter(List<Step> steps, int selectedPos, boolean isTwoPane
+            , ItemClickListener itemClickListener) {
+        this.steps = steps;
+        this.selectedPos = selectedPos;
         this.isTwoPane = isTwoPane;
         this.itemClickListener = itemClickListener;
     }
@@ -73,6 +85,13 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
         notifyDataSetChanged();
     }
 
+    public int getSelectedPos() {
+        return selectedPos;
+    }
+
+    public void setSelectedPos(int selectedPos) {
+        this.selectedPos = selectedPos;
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 

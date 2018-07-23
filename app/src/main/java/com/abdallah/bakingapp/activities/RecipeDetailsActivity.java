@@ -37,16 +37,16 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
     private static final String TAG = RecipeDetailsActivity.class.getSimpleName();
 
     public static final String EXTRA_RECIPE = "com.abdallah.bakingapp.extras.EXTRA_RECIPE";
+    private static final String STATE_RECIPE = "STATE_RECIPE";
+    private static final String STATE_CURRENT_SELECTED_STEP_POSITION = "STATE_CURRENT_SELECTED_STEP_POSITION";
 
     @BindView(R.id.tv_ingredients) TextView ingredientsTextView;
     @BindView(R.id.rv_steps) RecyclerView stepsRecyclerView;
 
     /**
-     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
-     * device.
+     * Whether or not the activity is in two-pane mode, i.e. running on a tablet device.
      */
     private boolean isTwoPane;
-
     private Recipe recipe;
     private RecipeStepsAdapter stepsAdapter;
 
@@ -85,12 +85,30 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
             isTwoPane = true;
         }
 
-        recipe = Parcels.unwrap(getIntent().getParcelableExtra(EXTRA_RECIPE));
+        int currentSelectedStepPos;
+        if (savedInstanceState == null) {
+            recipe = Parcels.unwrap(getIntent().getParcelableExtra(EXTRA_RECIPE));
+            currentSelectedStepPos = 0;
+        }
+        else {
+            // restore saved instance state
+            recipe = Parcels.unwrap(savedInstanceState.getParcelable(STATE_RECIPE));
+            currentSelectedStepPos = savedInstanceState.getInt(STATE_CURRENT_SELECTED_STEP_POSITION);
+        }
+
 
         if (recipe != null) {
             setTitle(recipe.getName());
             setupIngredientsTextView();
-            setupStepsRecyclerView();
+            setupStepsRecyclerView(currentSelectedStepPos);
+
+            if (isTwoPane && savedInstanceState == null) {
+                RecipeStepDetailsFragment recipeStepDetailsFragment =
+                        RecipeStepDetailsFragment.newInstance(recipe.getSteps().get(currentSelectedStepPos));
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.step_details_fragment_container, recipeStepDetailsFragment)
+                        .commit();
+            }
         }
         else {
             throw new RuntimeException("No 'recipe' was found in the intent extras!");
@@ -108,7 +126,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
         ingredientsTextView.setText(strBuilder);
     }
 
-    private void setupStepsRecyclerView() {
+    private void setupStepsRecyclerView(int currentSelectedStepPos) {
 
         stepsRecyclerView.setHasFixedSize(false);
 
@@ -121,7 +139,8 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
                 layoutManager.getOrientation());
         stepsRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        stepsAdapter = new RecipeStepsAdapter(recipe.getSteps(), isTwoPane, this);
+        stepsAdapter = new RecipeStepsAdapter(recipe.getSteps(), currentSelectedStepPos, isTwoPane
+                , this);
         stepsRecyclerView.setAdapter(stepsAdapter);
     }
 
@@ -142,6 +161,14 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
             startActivity(intent);
         }
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelable(STATE_RECIPE, Parcels.wrap(recipe));
+        outState.putInt(STATE_CURRENT_SELECTED_STEP_POSITION, stepsAdapter.getSelectedPos());
     }
 
     @Override
