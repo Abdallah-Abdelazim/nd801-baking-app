@@ -102,11 +102,11 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
             setupIngredientsTextView();
             setupStepsRecyclerView(currentSelectedStepPos);
 
-            if (isTwoPane && savedInstanceState == null) {
+            if (isTwoPane && currentSelectedStepPos == 0) {
                 RecipeStepDetailsFragment recipeStepDetailsFragment =
                         RecipeStepDetailsFragment.newInstance(recipe.getSteps().get(currentSelectedStepPos));
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.step_details_fragment_container, recipeStepDetailsFragment)
+                        .replace(R.id.step_details_fragment_container, recipeStepDetailsFragment)
                         .commit();
             }
         }

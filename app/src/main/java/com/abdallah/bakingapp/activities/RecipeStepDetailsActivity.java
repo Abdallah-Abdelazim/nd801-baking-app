@@ -6,20 +6,14 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.abdallah.bakingapp.R;
 import com.abdallah.bakingapp.fragments.RecipeStepDetailsFragment;
 import com.abdallah.bakingapp.models.recipe.Step;
-import com.abdallah.bakingapp.utils.LogUtils;
 
 import org.parceler.Parcels;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
