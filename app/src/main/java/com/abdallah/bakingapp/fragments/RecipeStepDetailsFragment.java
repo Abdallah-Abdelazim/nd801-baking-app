@@ -56,7 +56,6 @@ public class RecipeStepDetailsFragment extends Fragment {
     public static final String ARG_STEP = "item_id";
 
     @BindView(R.id.player_view) PlayerView playerView;
-    @BindView(R.id.iv_thumbnail) ImageView thumbnailImageView;
     @BindView(R.id.tv_step_description) TextView stepDescriptionTextView;
     private Unbinder unbinder;
 
@@ -101,11 +100,8 @@ public class RecipeStepDetailsFragment extends Fragment {
                 , false);
         unbinder = ButterKnife.bind(this, fragmentView);
 
-        if (!step.hasVideo()) {
+        if (!(step.hasVideo() || step.hasThumbnail())) {
             playerView.setVisibility(View.GONE);
-        }
-        if (!step.hasThumbnail()) {
-            thumbnailImageView.setVisibility(View.GONE);
         }
 
         return fragmentView;
@@ -118,13 +114,8 @@ public class RecipeStepDetailsFragment extends Fragment {
         if (step.hasVideo()) {
             initializePlayer(Uri.parse(step.getVideoUrl()));
         }
-
-        if (step.hasThumbnail()) {
-            GlideApp.with(this)
-                    .asGif()
-                    .load(Uri.parse(step.getThumbnailUrl()))
-                    .placeholder(R.drawable.loading_img_placeholder)
-                    .into(thumbnailImageView);
+        else if (step.hasThumbnail()) {
+            initializePlayer(Uri.parse(step.getThumbnailUrl()));
         }
 
         stepDescriptionTextView.setText(step.getDescription());

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -43,23 +43,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/iv_thumbnail"
-            app:layout_constraintEnd_toStartOf="@+id/right_guideline"
-            app:layout_constraintStart_toStartOf="@+id/left_guideline"
-            app:layout_constraintTop_toTopOf="@+id/top_guideline"
-            app:layout_constraintVertical_chainStyle="spread_inside"
-            app:resize_mode="fixed_width" />
-
-        <ImageView
-            android:id="@+id/iv_thumbnail"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
             app:layout_constraintBottom_toTopOf="@+id/cardView"
             app:layout_constraintEnd_toStartOf="@+id/right_guideline"
             app:layout_constraintStart_toStartOf="@+id/left_guideline"
-            app:layout_constraintTop_toBottomOf="@+id/player_view" />
+            app:layout_constraintTop_toBottomOf="@+id/top_guideline"
+            app:resize_mode="fixed_width" />
 
         <android.support.v7.widget.CardView
             android:id="@+id/cardView"
@@ -71,7 +59,7 @@
             app:layout_constraintBottom_toTopOf="@+id/bottom_guideline"
             app:layout_constraintEnd_toStartOf="@+id/right_guideline"
             app:layout_constraintStart_toStartOf="@+id/left_guideline"
-            app:layout_constraintTop_toBottomOf="@+id/iv_thumbnail">
+            app:layout_constraintTop_toBottomOf="@+id/player_view">
 
             <TextView
                 android:id="@+id/tv_step_description"
@@ -83,4 +71,4 @@
         </android.support.v7.widget.CardView>
 
     </android.support.constraint.ConstraintLayout>
-</android.support.v4.widget.NestedScrollView>
+</ScrollView>
