@@ -1,7 +1,9 @@
 package com.abdallah.bakingapp.activities;
 
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -9,11 +11,14 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.abdallah.bakingapp.R;
 import com.abdallah.bakingapp.adapters.RecipeStepsAdapter;
+import com.abdallah.bakingapp.app_widget.RecipeIngredientsWidget;
 import com.abdallah.bakingapp.fragments.RecipeStepDetailsFragment;
 import com.abdallah.bakingapp.models.recipe.Ingredient;
 import com.abdallah.bakingapp.models.recipe.Recipe;
@@ -172,11 +177,46 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_recipe_details_activity, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        // TODO app widget stuff
+        switch (item.getItemId()) {
+            case R.id.action_pin_recipe_to_widget:
+                pinRecipeToAppWidget();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
-        return super.onOptionsItemSelected(item);
+    private void pinRecipeToAppWidget() {
+        StringBuilder strBuilder = new StringBuilder();
+        for (Ingredient ingredient : recipe.getIngredients()) {
+            strBuilder.append(
+                    getString(R.string.ingredient_item, ingredient.getName()
+                            , ingredient.getFormattedQuantity(), ingredient.getMeasure())
+            );
+        }
+        String ingredients = strBuilder.toString();
+
+        // store the recipe name & ingredients in SharedPreferences
+        SharedPreferences sharedPreferences = getSharedPreferences(
+                getString(R.string.pref_widget_file_key), MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putLong(getString(R.string.saved_recipe_id_key), recipe.getId());
+        editor.putString(getString(R.string.saved_recipe_name_key), recipe.getName());
+        editor.putString(getString(R.string.saved_recipe_ingredients_key), ingredients);
+        editor.apply();
+
+        RecipeIngredientsWidget.updateAppWidgets(this, AppWidgetManager.getInstance(this));
+
+        Toast.makeText(this, R.string.msg_recipe_pinned_to_widget_successfully
+                , Toast.LENGTH_SHORT).show();
     }
 
 }

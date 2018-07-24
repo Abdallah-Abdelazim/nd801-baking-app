@@ -4,4 +4,6 @@
     <dimen name="constraint_vertical_guideline_margin">16dp</dimen>
     <dimen name="constraint_horizontal_guideline_margin">8dp</dimen>
     <dimen name="progress_bar_dimension">48dp</dimen>
+
+    <dimen name="widget_margin">8dp</dimen>
 </resources>

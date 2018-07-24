@@ -10,6 +10,9 @@
     <string name="recipe_step_id_text">%d.</string>
     <string name="prev_step_button_text">Previous Step</string>
     <string name="next_step_button_text">Next Step</string>
+    <string name="empty_widget_text">Pin a recipe to see its ingredients here</string>
+    <string name="action_pin_recipe_to_widget_title">Pin to Widget</string>
+    <string name="action_retry">RETRY</string>
     <!---->
 
     <!-- Msg -->
@@ -18,11 +21,18 @@
     <string name="error_loading_network_problem">Error loading! Please check your network connection</string>
     <string name="error_loading_no_internet">Please turn on you WIFI or cellular data</string>
     <string name="error_loading_general">An error occurred!</string>
-    <string name="action_retry">RETRY</string>
+    <string name="msg_recipe_pinned_to_widget_successfully">Pinned Successfully!</string>
     <!---->
 
     <!-- Content Descriptions -->
     <string name="has_video_icon_content_description">Step has a video</string>
     <!---->
-
+    
+    <!-- Shared Preferences Constants -->
+    <string name="pref_widget_file_key" translatable="false">com.abdallah.bakingapp.PREF_WIDGET_FILE_KEY</string>
+    <string name="saved_recipe_id_key" translatable="false">SAVED_RECIPE_ID_KEY</string>
+    <string name="saved_recipe_name_key" translatable="false">SAVED_RECIPE_NAME_KEY</string>
+    <string name="saved_recipe_ingredients_key" translatable="false">SAVED_RECIPE_INGREDIENTS_KEY</string>
+    <string name="default_recipe_name_ingredients_value" translatable="false">NO_VALUE</string>
+    <!---->
 </resources>
