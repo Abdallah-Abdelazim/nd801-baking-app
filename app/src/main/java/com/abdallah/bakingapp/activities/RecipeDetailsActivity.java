@@ -58,7 +58,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
      */
     public static Intent getStartIntent(Context context, Recipe recipe) {
         Intent intent = new Intent(context, RecipeDetailsActivity.class);
-        intent.putExtra(RecipeDetailsActivity.EXTRA_RECIPE, Parcels.wrap(recipe));
+        intent.putExtra(EXTRA_RECIPE, Parcels.wrap(recipe));
         return intent;
     }
 
