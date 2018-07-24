@@ -122,13 +122,11 @@ public class RecipeStepDetailsFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if (savedInstanceState != null) {
+        if (savedInstanceState != null && savedInstanceState.containsKey(STATE_POSITION_EXO_PLAYER)
+                && savedInstanceState.containsKey(STATE_IS_PLAY_WHEN_READY_EXO_PLAYER)) {
+            // restore video player position & playback status
             positionExoPlayer = savedInstanceState.getLong(STATE_POSITION_EXO_PLAYER);
             isPlayWhenReadyExoPlayer = savedInstanceState.getBoolean(STATE_IS_PLAY_WHEN_READY_EXO_PLAYER);
-        }
-        if (step.hasVideo()) {
-            exoPlayer = ExoPlayerUtils.initializePlayer(getContext(), playerView
-                    , Uri.parse(step.getVideoUrl()), positionExoPlayer, isPlayWhenReadyExoPlayer);
         }
 
         if (isFullScreen) {
@@ -136,29 +134,69 @@ public class RecipeStepDetailsFragment extends Fragment {
         }
         else {
             stepDescriptionTextView.setText(step.getDescription());
+            // TODO display thumbnail here
         }
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // initialize the video player
+        if (step.hasVideo()) {
+            exoPlayer = ExoPlayerUtils.initializePlayer(getContext(), playerView
+                    , Uri.parse(step.getVideoUrl()), positionExoPlayer, isPlayWhenReadyExoPlayer);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (exoPlayer != null) {
+            // this resumes the video player if it was paused in onPause()
+            exoPlayer.setPlayWhenReady(isPlayWhenReadyExoPlayer);
+        }
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if (exoPlayer != null) {
+            positionExoPlayer = exoPlayer.getCurrentPosition();
+            isPlayWhenReadyExoPlayer = exoPlayer.getPlayWhenReady();
+            // pause the video player
+            exoPlayer.setPlayWhenReady(false);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        if (exoPlayer != null) {
+            // release the video player
+            ExoPlayerUtils.releasePlayer(exoPlayer);
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-        releaseExoPlayer();
-    }
-
-    private void releaseExoPlayer() {
-        if (exoPlayer != null) {
-            ExoPlayerUtils.releasePlayer(exoPlayer);
-        }
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putLong(STATE_POSITION_EXO_PLAYER, exoPlayer.getCurrentPosition());
-        outState.putBoolean(STATE_IS_PLAY_WHEN_READY_EXO_PLAYER, exoPlayer.getPlayWhenReady());
+        if (exoPlayer != null) {
+            outState.putLong(STATE_POSITION_EXO_PLAYER, positionExoPlayer);
+            outState.putBoolean(STATE_IS_PLAY_WHEN_READY_EXO_PLAYER, isPlayWhenReadyExoPlayer);
+        }
     }
 
 }
