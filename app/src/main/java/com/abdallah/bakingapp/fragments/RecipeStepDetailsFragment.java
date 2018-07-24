@@ -18,7 +18,6 @@ import com.abdallah.bakingapp.activities.RecipeStepDetailsActivity;
 import com.abdallah.bakingapp.models.recipe.Step;
 import com.abdallah.bakingapp.utils.ExoPlayerUtils;
 import com.abdallah.bakingapp.utils.GlideApp;
-import com.abdallah.bakingapp.utils.LogUtils;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
 
