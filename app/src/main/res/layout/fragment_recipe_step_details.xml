@@ -44,11 +44,23 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:minHeight="128dp"
+            app:layout_constraintBottom_toTopOf="@+id/iv_step_thumbnail"
+            app:layout_constraintEnd_toStartOf="@+id/right_guideline"
+            app:layout_constraintStart_toStartOf="@+id/left_guideline"
+            app:layout_constraintTop_toTopOf="@+id/top_guideline"
+            app:resize_mode="fixed_width" />
+
+        <ImageView
+            android:id="@+id/iv_step_thumbnail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:adjustViewBounds="true"
             app:layout_constraintBottom_toTopOf="@+id/cardView"
             app:layout_constraintEnd_toStartOf="@+id/right_guideline"
             app:layout_constraintStart_toStartOf="@+id/left_guideline"
-            app:layout_constraintTop_toBottomOf="@+id/top_guideline"
-            app:resize_mode="fixed_width" />
+            app:layout_constraintTop_toBottomOf="@+id/player_view" />
 
         <android.support.v7.widget.CardView
             android:id="@+id/cardView"
@@ -60,7 +72,7 @@
             app:layout_constraintBottom_toTopOf="@+id/bottom_guideline"
             app:layout_constraintEnd_toStartOf="@+id/right_guideline"
             app:layout_constraintStart_toStartOf="@+id/left_guideline"
-            app:layout_constraintTop_toBottomOf="@+id/player_view">
+            app:layout_constraintTop_toBottomOf="@+id/iv_step_thumbnail">
 
             <TextView
                 android:id="@+id/tv_step_description"

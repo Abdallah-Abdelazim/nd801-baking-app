@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.abdallah.bakingapp.R;
@@ -16,6 +17,7 @@ import com.abdallah.bakingapp.activities.RecipeDetailsActivity;
 import com.abdallah.bakingapp.activities.RecipeStepDetailsActivity;
 import com.abdallah.bakingapp.models.recipe.Step;
 import com.abdallah.bakingapp.utils.ExoPlayerUtils;
+import com.abdallah.bakingapp.utils.GlideApp;
 import com.abdallah.bakingapp.utils.LogUtils;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
@@ -47,6 +49,7 @@ public class RecipeStepDetailsFragment extends Fragment {
     private static final String STATE_IS_PLAY_WHEN_READY_EXO_PLAYER = "STATE_IS_PLAY_WHEN_READY_EXO_PLAYER";
 
     @BindView(R.id.player_view) PlayerView playerView;
+    @Nullable @BindView(R.id.iv_step_thumbnail) ImageView thumbnailImageView;
     @Nullable @BindView(R.id.tv_step_description) TextView stepDescriptionTextView;
     private Unbinder unbinder;
 
@@ -130,11 +133,24 @@ public class RecipeStepDetailsFragment extends Fragment {
         }
 
         if (isFullScreen) {
+            // displaying the full screen layout
             ((RecipeStepDetailsActivity) getActivity()).displayFragmentFullScreen();
         }
         else {
+            // displaying th normal layout
             stepDescriptionTextView.setText(step.getDescription());
-            // TODO display thumbnail here
+
+            if (step.hasThumbnail()) {
+                GlideApp.with(this)
+                        .asBitmap()
+                        .load(Uri.parse(step.getThumbnailUrl()))
+                        .placeholder(R.drawable.img_placeholder)
+                        .into(thumbnailImageView);
+            }
+            else {
+                thumbnailImageView.setVisibility(View.GONE);
+            }
+
         }
 
     }
