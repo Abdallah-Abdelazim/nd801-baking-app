@@ -124,14 +124,10 @@ public class RecipeStepDetailsFragment extends Fragment {
         super.onDestroyView();
         unbinder.unbind();
         releaseExoPlayer();
-
-        LogUtils.d(TAG, "onDestroyView");
     }
 
     private void releaseExoPlayer() {
         if (exoPlayer != null) {
-            positionExoPlayer = exoPlayer.getCurrentPosition();
-            isPlayWhenReadyExoPlayer = exoPlayer.getPlayWhenReady();
             ExoPlayerUtils.releasePlayer(exoPlayer);
         }
     }
@@ -140,10 +136,8 @@ public class RecipeStepDetailsFragment extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putLong(STATE_POSITION_EXO_PLAYER, positionExoPlayer);
-        outState.putBoolean(STATE_IS_PLAY_WHEN_READY_EXO_PLAYER, isPlayWhenReadyExoPlayer);
-
-        LogUtils.d(TAG, "onSaveInstanceState");
+        outState.putLong(STATE_POSITION_EXO_PLAYER, exoPlayer.getCurrentPosition());
+        outState.putBoolean(STATE_IS_PLAY_WHEN_READY_EXO_PLAYER, exoPlayer.getPlayWhenReady());
     }
 
 }

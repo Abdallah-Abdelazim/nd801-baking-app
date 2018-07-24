@@ -103,11 +103,11 @@ public class RecipeStepDetailsActivity extends AppCompatActivity {
             hideSystemUI();
             if (currentStep.hasVideo()) {
                 exoPlayer = ExoPlayerUtils.initializePlayer(this, playerView
-                        , Uri.parse(currentStep.getVideoUrl()));
+                        , Uri.parse(currentStep.getVideoUrl()), 0L, true);
             }
             else if (currentStep.hasThumbnail()) {
                 exoPlayer = ExoPlayerUtils.initializePlayer(this, playerView
-                        , Uri.parse(currentStep.getThumbnailUrl()));
+                        , Uri.parse(currentStep.getThumbnailUrl()), 0L, true);
             }
             exoPlayer.setPlayWhenReady(true);
         }
