@@ -153,5 +153,4 @@ public class RecipesFragment extends Fragment implements RecipesAdapter.ItemClic
         startActivity(intent);
     }
 
-    // TODO save instance state for the entire app
 }
