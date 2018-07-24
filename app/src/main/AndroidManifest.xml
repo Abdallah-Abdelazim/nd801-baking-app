@@ -58,8 +58,6 @@
                 android:resource="@xml/recipe_ingredients_widget_info" />
         </receiver>
 
-        <service android:name=".app_widget.RecipeIngredientsWidget$UpdateService" />
-
     </application>
 
 </manifest>

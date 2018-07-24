@@ -205,6 +205,8 @@ public class RecipeStepDetailsActivity extends AppCompatActivity {
         // Enables sticky immersive mode.
         View decorView = getWindow().getDecorView();
 
+        decorView.setBackgroundColor(getResources().getColor(android.R.color.black));
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             decorView.setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY

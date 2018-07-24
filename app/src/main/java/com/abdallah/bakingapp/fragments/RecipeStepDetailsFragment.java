@@ -15,6 +15,7 @@ import com.abdallah.bakingapp.activities.RecipeDetailsActivity;
 import com.abdallah.bakingapp.activities.RecipeStepDetailsActivity;
 import com.abdallah.bakingapp.models.recipe.Step;
 import com.abdallah.bakingapp.utils.ExoPlayerUtils;
+import com.abdallah.bakingapp.utils.LogUtils;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
 
@@ -40,6 +41,9 @@ public class RecipeStepDetailsFragment extends Fragment {
      */
     public static final String ARG_STEP = "item_id";
 
+    private static final String STATE_POSITION_EXO_PLAYER = "STATE_POSITION_EXO_PLAYER";
+    private static final String STATE_IS_PLAY_WHEN_READY_EXO_PLAYER = "STATE_IS_PLAY_WHEN_READY_EXO_PLAYER";
+
     @BindView(R.id.player_view) PlayerView playerView;
     @BindView(R.id.tv_step_description) TextView stepDescriptionTextView;
     private Unbinder unbinder;
@@ -47,6 +51,8 @@ public class RecipeStepDetailsFragment extends Fragment {
     private Step step;
 
     private SimpleExoPlayer exoPlayer;
+    private long positionExoPlayer = 0L;
+    private boolean isPlayWhenReadyExoPlayer = false;
 
 
     /**
@@ -93,16 +99,21 @@ public class RecipeStepDetailsFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            positionExoPlayer = savedInstanceState.getLong(STATE_POSITION_EXO_PLAYER);
+            isPlayWhenReadyExoPlayer = savedInstanceState.getBoolean(STATE_IS_PLAY_WHEN_READY_EXO_PLAYER);
+        }
 
         if (step.hasVideo()) {
             exoPlayer = ExoPlayerUtils.initializePlayer(getContext(), playerView
-                    , Uri.parse(step.getVideoUrl()));
+                    , Uri.parse(step.getVideoUrl()), positionExoPlayer, isPlayWhenReadyExoPlayer);
         }
         else if (step.hasThumbnail()) {
             exoPlayer = ExoPlayerUtils.initializePlayer(getContext(), playerView
-                    , Uri.parse(step.getThumbnailUrl()));
+                    , Uri.parse(step.getThumbnailUrl()), positionExoPlayer, isPlayWhenReadyExoPlayer);
         }
 
         stepDescriptionTextView.setText(step.getDescription());
@@ -112,6 +123,27 @@ public class RecipeStepDetailsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-        ExoPlayerUtils.releasePlayer(exoPlayer);
+        releaseExoPlayer();
+
+        LogUtils.d(TAG, "onDestroyView");
     }
+
+    private void releaseExoPlayer() {
+        if (exoPlayer != null) {
+            positionExoPlayer = exoPlayer.getCurrentPosition();
+            isPlayWhenReadyExoPlayer = exoPlayer.getPlayWhenReady();
+            ExoPlayerUtils.releasePlayer(exoPlayer);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putLong(STATE_POSITION_EXO_PLAYER, positionExoPlayer);
+        outState.putBoolean(STATE_IS_PLAY_WHEN_READY_EXO_PLAYER, isPlayWhenReadyExoPlayer);
+
+        LogUtils.d(TAG, "onSaveInstanceState");
+    }
+
 }

@@ -2,6 +2,7 @@ package com.abdallah.bakingapp.utils;
 
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import com.abdallah.bakingapp.R;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -30,7 +31,8 @@ public final class ExoPlayerUtils {
      * Initializes ExoPlayer;
      * @param mediaUri the URI of the video/audio to play.
      */
-    public static SimpleExoPlayer initializePlayer(Context ctx, PlayerView playerView, Uri mediaUri) {
+    public static SimpleExoPlayer initializePlayer(@NonNull Context ctx, @NonNull PlayerView playerView
+            , @NonNull Uri mediaUri, long playbackPosition, boolean isPlayWhenReady) {
         // Create a default TrackSelector
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelection.Factory videoTrackSelectionFactory =
@@ -52,6 +54,8 @@ public final class ExoPlayerUtils {
                 .createMediaSource(mediaUri);
         // Prepare the player with the source.
         player.prepare(videoSource);
+        player.seekTo(playbackPosition);
+        player.setPlayWhenReady(isPlayWhenReady);
 
         return player;
     }
@@ -59,12 +63,10 @@ public final class ExoPlayerUtils {
     /**
      * Release ExoPlayer.
      */
-    public static void releasePlayer(SimpleExoPlayer player) {
-        if (player != null) {
+    public static void releasePlayer(@NonNull SimpleExoPlayer player) {
             player.stop();
             player.release();
             player = null;
-        }
     }
 
 }
