@@ -1,5 +1,6 @@
 package com.abdallah.bakingapp.fragments;
 
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -39,20 +40,24 @@ public class RecipeStepDetailsFragment extends Fragment {
      * The fragment argument representing the Step instance that this fragment
      * represents.
      */
-    public static final String ARG_STEP = "item_id";
+    public static final String ARG_STEP = "ARG_STEP";
+    public static final String ARG_IS_TWO_PANE = "ARG_IS_TWO_PANE";
 
     private static final String STATE_POSITION_EXO_PLAYER = "STATE_POSITION_EXO_PLAYER";
     private static final String STATE_IS_PLAY_WHEN_READY_EXO_PLAYER = "STATE_IS_PLAY_WHEN_READY_EXO_PLAYER";
 
     @BindView(R.id.player_view) PlayerView playerView;
-    @BindView(R.id.tv_step_description) TextView stepDescriptionTextView;
+    @Nullable @BindView(R.id.tv_step_description) TextView stepDescriptionTextView;
     private Unbinder unbinder;
 
     private Step step;
+    private boolean isTwoPane;
+
+    private boolean isFullScreen = false;
 
     private SimpleExoPlayer exoPlayer;
     private long positionExoPlayer = 0L;
-    private boolean isPlayWhenReadyExoPlayer = false;
+    private boolean isPlayWhenReadyExoPlayer = true;
 
 
     /**
@@ -67,10 +72,11 @@ public class RecipeStepDetailsFragment extends Fragment {
      * @param step required fragment argument.
      * @return an instance of RecipeStepDetailsFragment.
      */
-    public static RecipeStepDetailsFragment newInstance(Step step) {
+    public static RecipeStepDetailsFragment newInstance(Step step, boolean isTwoPane) {
         RecipeStepDetailsFragment fragment = new RecipeStepDetailsFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_STEP, Parcels.wrap(step));
+        args.putBoolean(ARG_IS_TWO_PANE, isTwoPane);
         fragment.setArguments(args);
         return fragment;
     }
@@ -82,16 +88,30 @@ public class RecipeStepDetailsFragment extends Fragment {
         if (getArguments().containsKey(ARG_STEP)) {
             step = Parcels.unwrap(getArguments().getParcelable(ARG_STEP));
         }
+        if (getArguments().containsKey(ARG_IS_TWO_PANE)) {
+            isTwoPane = getArguments().getBoolean(ARG_IS_TWO_PANE);
+        }
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View fragmentView = inflater.inflate(R.layout.fragment_recipe_step_details, container
-                , false);
+
+        View fragmentView;
+        int orientation = getResources().getConfiguration().orientation;
+        if (step.hasVideo() && !isTwoPane
+                && orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            isFullScreen = true;
+            fragmentView = inflater.inflate(R.layout.video_full_screen, container
+                    , false);
+        }
+        else {
+            fragmentView = inflater.inflate(R.layout.fragment_recipe_step_details, container
+                    , false);
+        }
         unbinder = ButterKnife.bind(this, fragmentView);
 
-        if (!(step.hasVideo() || step.hasThumbnail())) {
+        if (!step.hasVideo()) {
             playerView.setVisibility(View.GONE);
         }
 
@@ -106,17 +126,18 @@ public class RecipeStepDetailsFragment extends Fragment {
             positionExoPlayer = savedInstanceState.getLong(STATE_POSITION_EXO_PLAYER);
             isPlayWhenReadyExoPlayer = savedInstanceState.getBoolean(STATE_IS_PLAY_WHEN_READY_EXO_PLAYER);
         }
-
         if (step.hasVideo()) {
             exoPlayer = ExoPlayerUtils.initializePlayer(getContext(), playerView
                     , Uri.parse(step.getVideoUrl()), positionExoPlayer, isPlayWhenReadyExoPlayer);
         }
-        else if (step.hasThumbnail()) {
-            exoPlayer = ExoPlayerUtils.initializePlayer(getContext(), playerView
-                    , Uri.parse(step.getThumbnailUrl()), positionExoPlayer, isPlayWhenReadyExoPlayer);
+
+        if (isFullScreen) {
+            ((RecipeStepDetailsActivity) getActivity()).displayFragmentFullScreen();
+        }
+        else {
+            stepDescriptionTextView.setText(step.getDescription());
         }
 
-        stepDescriptionTextView.setText(step.getDescription());
     }
 
     @Override

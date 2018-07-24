@@ -109,7 +109,8 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
 
             if (isTwoPane && currentSelectedStepPos == 0) {
                 RecipeStepDetailsFragment recipeStepDetailsFragment =
-                        RecipeStepDetailsFragment.newInstance(recipe.getSteps().get(currentSelectedStepPos));
+                        RecipeStepDetailsFragment.newInstance(
+                                recipe.getSteps().get(currentSelectedStepPos), isTwoPane);
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.step_details_fragment_container, recipeStepDetailsFragment)
                         .commit();
@@ -155,7 +156,8 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
 
         if (isTwoPane) {
             RecipeStepDetailsFragment recipeStepDetailsFragment =
-                    RecipeStepDetailsFragment.newInstance(recipe.getSteps().get(clickedItemIndex));
+                    RecipeStepDetailsFragment.newInstance(
+                            recipe.getSteps().get(clickedItemIndex), isTwoPane);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.step_details_fragment_container, recipeStepDetailsFragment)
                     .commit();

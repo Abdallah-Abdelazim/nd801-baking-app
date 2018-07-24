@@ -2,23 +2,20 @@ package com.abdallah.bakingapp.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.net.Uri;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 
 import com.abdallah.bakingapp.R;
 import com.abdallah.bakingapp.fragments.RecipeStepDetailsFragment;
 import com.abdallah.bakingapp.models.recipe.Step;
-import com.abdallah.bakingapp.utils.ExoPlayerUtils;
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.ui.PlayerView;
 
 import org.parceler.Parcels;
 
@@ -27,7 +24,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Optional;
 
 /**
  * An activity representing a single Step detail screen. This
@@ -45,16 +41,11 @@ public class RecipeStepDetailsActivity extends AppCompatActivity {
     private static final String STATE_STEPS = "STATE_STEPS";
     private static final String STATE_CURRENT_STEP_INDEX = "STATE_CURRENT_STEP_INDEX";
 
-    @Nullable @BindView(R.id.btn_prev_step) Button prevStepButton;
-    @Nullable @BindView(R.id.btn_next_step) Button nextStepButton;
-
-    @Nullable @BindView(R.id.player_view) PlayerView playerView;
+    @BindView(R.id.btn_prev_step) Button prevStepButton;
+    @BindView(R.id.btn_next_step) Button nextStepButton;
 
     private List<Step> steps;
     private int currentStepIndex;
-
-    private SimpleExoPlayer exoPlayer;
-    private boolean isFullScreen = false;
 
     /**
      * Factory method to facilitate creating explicit intents to be used to start this activity.
@@ -72,6 +63,16 @@ public class RecipeStepDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_recipe_step_details);
+        ButterKnife.bind(this);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        // Show the Up button in the action bar.
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         if (savedInstanceState == null) {
             // get the 'steps' & 'currentStepIndex' from intent extras
@@ -84,45 +85,7 @@ public class RecipeStepDetailsActivity extends AppCompatActivity {
             currentStepIndex = savedInstanceState.getInt(STATE_CURRENT_STEP_INDEX);
         }
 
-        Step currentStep = steps.get(currentStepIndex);
-
-        int layoutId;
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
-                && (currentStep.hasVideo() || currentStep.hasThumbnail())) {
-            layoutId = R.layout.video_full_screen;
-            isFullScreen = true;
-        }
-        else {
-            layoutId = R.layout.activity_recipe_step_details;
-        }
-        setContentView(layoutId);
-        ButterKnife.bind(this);
-
-        if (isFullScreen) {
-            /* displaying the activity as full screen video in landscape mode */
-            hideSystemUI();
-            if (currentStep.hasVideo()) {
-                exoPlayer = ExoPlayerUtils.initializePlayer(this, playerView
-                        , Uri.parse(currentStep.getVideoUrl()), 0L, true);
-            }
-            else if (currentStep.hasThumbnail()) {
-                exoPlayer = ExoPlayerUtils.initializePlayer(this, playerView
-                        , Uri.parse(currentStep.getThumbnailUrl()), 0L, true);
-            }
-            exoPlayer.setPlayWhenReady(true);
-        }
-        else {
-            /* displaying the normal step details */
-
-            Toolbar toolbar = findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
-
-            // Show the Up button in the action bar.
-            ActionBar actionBar = getSupportActionBar();
-            if (actionBar != null) {
-                actionBar.setDisplayHomeAsUpEnabled(true);
-            }
-
+        if (steps != null && currentStepIndex != -1) {
             setTitle(steps.get(currentStepIndex).getShortDescription());
 
             // savedInstanceState is non-null when there is fragment state
@@ -138,51 +101,45 @@ public class RecipeStepDetailsActivity extends AppCompatActivity {
                 // Create the detail fragment and add it to the activity
                 // using a fragment transaction.
                 RecipeStepDetailsFragment recipeStepDetailsFragment =
-                        RecipeStepDetailsFragment.newInstance(steps.get(currentStepIndex));
+                        RecipeStepDetailsFragment.newInstance(steps.get(currentStepIndex), false);
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.step_details_fragment_container, recipeStepDetailsFragment)
                         .commit();
             }
 
             if (currentStepIndex == 0) prevStepButton.setEnabled(false);  // end has been reached
-            if (currentStepIndex == steps.size() - 1)
-                nextStepButton.setEnabled(false); // end has also been reached
+            if (currentStepIndex == steps.size()-1) nextStepButton.setEnabled(false); // end has also been reached
+        }
+        else {
+            throw new RuntimeException("No 'steps' or 'currentStepIndex' were found in the intent extras or the saved instance state!");
         }
 
     }
 
-    @Optional
     @OnClick(R.id.btn_prev_step)
     void openPreviousStep() {
-            currentStepIndex--;
-            changeDisplayedStep();
-            if (currentStepIndex == 0) prevStepButton.setEnabled(false);  // end has been reached
-            if (!nextStepButton.isEnabled()) nextStepButton.setEnabled(true);
+        currentStepIndex--;
+        changeDisplayedStep();
+        if (currentStepIndex == 0) prevStepButton.setEnabled(false);  // end has been reached
+        if (!nextStepButton.isEnabled()) nextStepButton.setEnabled(true);
     }
 
-    @Optional
     @OnClick(R.id.btn_next_step)
     void openNextStep() {
-            currentStepIndex++;
-            changeDisplayedStep();
-            if (currentStepIndex == steps.size()-1) nextStepButton.setEnabled(false); // end has been reached
-            if (!prevStepButton.isEnabled()) prevStepButton.setEnabled(true);
+        currentStepIndex++;
+        changeDisplayedStep();
+        if (currentStepIndex == steps.size()-1) nextStepButton.setEnabled(false); // end has been reached
+        if (!prevStepButton.isEnabled()) prevStepButton.setEnabled(true);
     }
 
     private void changeDisplayedStep() {
         setTitle(steps.get(currentStepIndex).getShortDescription());
 
         RecipeStepDetailsFragment recipeStepDetailsFragment =
-                RecipeStepDetailsFragment.newInstance(steps.get(currentStepIndex));
+                RecipeStepDetailsFragment.newInstance(steps.get(currentStepIndex), false);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.step_details_fragment_container, recipeStepDetailsFragment)
                 .commit();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (isFullScreen) ExoPlayerUtils.releasePlayer(exoPlayer);
     }
 
     @Override
@@ -193,37 +150,15 @@ public class RecipeStepDetailsActivity extends AppCompatActivity {
         outState.putInt(STATE_CURRENT_STEP_INDEX, currentStepIndex);
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (isFullScreen && hasFocus) {
-            hideSystemUI();
-        }
-    }
+    public void displayFragmentFullScreen() {
+        findViewById(R.id.app_bar).setVisibility(View.GONE);
+        findViewById(R.id.ll_controls).setVisibility(View.GONE);
 
-    private void hideSystemUI() {
-        // Enables sticky immersive mode.
-        View decorView = getWindow().getDecorView();
-
-        decorView.setBackgroundColor(getResources().getColor(android.R.color.black));
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            decorView.setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                            // Hide the nav bar and status bar
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN);
-        }
-        else {
-            decorView.setSystemUiVisibility(
-                    // Set the content to appear under the system bars so that the
-                    // content doesn't resize when the system bars hide and show.
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            // Hide the nav bar and status bar
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN);
+        getWindow().getDecorView().setBackgroundColor(Color.BLACK);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.BLACK);
         }
     }
 
